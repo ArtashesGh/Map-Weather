@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -27,6 +28,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        if !hasLocationPermission() {
+            let alertController = UIAlertController(title: "Location Permission Required", message: "Please enable location permissions in settings.", preferredStyle: .alert)
+            
+            let okAction = UIAlertAction(title: "Settings", style: .default, handler: {(cAlertAction) in
+                //Redirect to Settings app
+                UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+            })
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            alertController.addAction(cancelAction)
+            
+            alertController.addAction(okAction)
+            
+            self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+        }
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
@@ -45,6 +61,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+    
+    func hasLocationPermission() -> Bool {
+        var hasPermission = false
+        let manager = CLLocationManager()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            switch manager.authorizationStatus {
+            case .notDetermined, .restricted, .denied:
+                hasPermission = false
+            case .authorizedAlways, .authorizedWhenInUse:
+                hasPermission = true
+            @unknown default:
+                    break
+            }
+        } else {
+            hasPermission = false
+        }
+        
+        return hasPermission
     }
 
 

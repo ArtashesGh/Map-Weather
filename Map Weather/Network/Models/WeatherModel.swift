@@ -15,7 +15,7 @@ struct WeatherModel: Codable {
     let pres: Double?
     let timezone, obTime, countryCode: String?
     let clouds, ts: Double?
-    let solarRAD:  Double?
+    let solarRAD: Double?
     let stateCode, cityName: String?
     let windSpd: Double?
     let windCdirFull, windCdir: String?
